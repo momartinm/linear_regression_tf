@@ -260,8 +260,8 @@ En primer lugar definiremos los elementos básicos para el proceso de entrenamie
 ```
 def fit( features_train, labels_train, num_epochs, learning_rate=0.001):
 
-  num_samples = train_features.shape[0]
-  num_features = 1 if len(train_features.shape) == 1 else train_features.shape[1]
+  num_samples = features_train.shape[0]
+  num_features = 1 if len(features_train.shape) == 1 else features_train.shape[1]
 
   model = Model()
 
@@ -320,7 +320,7 @@ Una vez finalizada el proceso de entrenamiento devolveremos nuestro modelo
 Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante 100 iteraciones con una tasa de aprendizaje del 0.001. Si queremos podemos construir diferentes modelos y ver el resultado de cada uno de ellos. 
 
 ```
-model = fit(train_features, train_labels, 100)
+model = fit(features_train, labels_train, 100)
 ```
 
 En este caso yo he construido un modelo tras 100 iteraciones. 
