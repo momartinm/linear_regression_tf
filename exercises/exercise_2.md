@@ -362,4 +362,4 @@ Has aprendido como construir un modelo de regresión mediante Machine Learning u
 7. Como construir el bucle de entrenamiento. 
 8. Como realizar una predicción. 
 
-<img src="../img/ejercicio_4_congrats.png" alt="Congrats ejercicio 2" width="800"/>
+<img src="../img/ejercicio_2_congrats.png" alt="Congrats ejercicio 2" width="800"/>
