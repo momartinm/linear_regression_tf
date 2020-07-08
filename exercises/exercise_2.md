@@ -343,8 +343,8 @@ Este fragmento de código nos mostrará la evolución de los valores de loss par
 Para finalizar podremos comprobar el resultado de nuestra recta de regresión en dos dimensiones mediante el siguiente fragmento de código 
 
 ```
-plt.scatter(train_features, train_labels, label="true")
-plt.scatter(train_features, model(train_features), label="predicted")
+plt.scatter(features_train, labels_train, label="true")
+plt.scatter(features_train, model(features_train), label="predicted")
 plt.legend(['true', 'predicted'])
 plt.show()
 ```
