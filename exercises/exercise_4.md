@@ -203,6 +203,12 @@ features_train['MoSold'] = pd.to_numeric(features_train['MoSold'], downcast='flo
 features_train['YrSold'] = pd.to_numeric(features_train['YrSold'], downcast='float')
 
 labels_train = data_train['SalePrice']
+
+features_test = data_test[['TotRmsAbvGrd', 'MoSold', 'YrSold']]
+
+features_test['TotRmsAbvGrd'] = pd.to_numeric(features_test['TotRmsAbvGrd'], downcast='float')
+features_test['MoSold'] = pd.to_numeric(features_test['MoSold'], downcast='float')
+features_test['YrSold'] = pd.to_numeric(features_test['YrSold'], downcast='float')
 ```
 
 **Paso 6. Generación de la red**
