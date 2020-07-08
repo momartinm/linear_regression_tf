@@ -224,9 +224,9 @@ Una vez definadas la variables de entrada y salida con su formato (shape) podemo
 ```
 net = Sequential(name='Linear Regresion')
 net.add(Dense(3, input_dim=3, kernel_initializer='normal', activation='relu'))
-net.add(Dense(9, kernel_initializer='normal', activation='relu')),
-net.add(Dense(9, kernel_initializer='normal', activation='relu')),
-net.add(Dense(9, kernel_initializer='normal', activation='relu')),
+net.add(Dense(9, kernel_initializer='normal', activation='relu'))
+net.add(Dense(9, kernel_initializer='normal', activation='relu'))
+net.add(Dense(9, kernel_initializer='normal', activation='relu'))
 net.add(Dense(1, kernel_initializer='normal'))
 ```
 
