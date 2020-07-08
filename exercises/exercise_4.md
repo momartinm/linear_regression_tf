@@ -147,8 +147,8 @@ else:
 Una vez hayamos creado el directorio __data__ podemos proceder a descargar el archivo comprimido donde se encuentra toda la información necesaria para el desarrollo de este tutorial mediante el siguiente fragmento de código:
 
 ```
-!wget --no-check-certificate --content-disposition \
-    https://github.com/momartinm/linear_regression_tf/tree/master/data/neolen-house-price-prediction-kaggle.zip \
+!wget --no-check-certificate \
+    https://github.com/momartinm/linear_regression_tf/raw/master/data/neolen-house-price-prediction-kaggle.zip \
     -O /content/data/neolen-house-price-prediction-kaggle.zip
 ```
 
