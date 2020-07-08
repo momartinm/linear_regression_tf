@@ -126,9 +126,10 @@ Al igual que en el paso 1 hemos utilizado un comando para la descarga de los dat
 
 Una vez que hemos descargado correctamente nuestro datos, podremos descomprimir el archivo con el objetivo de utilizar los diferentes archivos que contiene. Para ello deberemos utilizar el siguiente fragmento de código:
 
-local_zip = '/content/data/neolen-house-price-prediction-kaggle.zip'
 
 ```
+local_zip = '/content/data/neolen-house-price-prediction-kaggle.zip'
+
 try:
   zip_ref = zipfile.ZipFile(local_zip, 'r')
   zip_ref.extractall(data_path)
