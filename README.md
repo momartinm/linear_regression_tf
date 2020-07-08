@@ -16,6 +16,15 @@ En este taller se describe el proceso de construcción de modelo de regresión m
 * Ejercicio 3 - [Creación de un una regresión lineal múltiple mediante algoritmos matemáticos](./exercises/exercise_3.md)
 * Ejercicio 4 - [Creación de un una regresión lineal múltiple mediante redes de neuronas](./exercises/exercise_4.md)
 
+## Itinerarios
+
+El taller puede realizarme mediante mútiples itenerarios que dependerán de que tipo de sistema de construcción de modelos de regresión podemos aprender:
+
+* Itinerario 1: Ejercicio 1 => Ejercicio 2 => Ejercicio 3 => Ejercicio 4
+* Itinerario 2: Ejercicio 1 => Ejercicio 2 => Ejercicio 4
+* ...
+* Itinerario N: Ejercicio 1 => Ejercicio 4
+
 ## Requisitos mínimos
 
 A continuación se describen los requisitos mínimos para poder realizar este taller. 
