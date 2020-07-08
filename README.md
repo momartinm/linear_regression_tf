@@ -18,7 +18,7 @@ En este taller se describe el proceso de construcción de modelo de regresión m
 
 ## Itinerarios
 
-El taller puede realizarme mediante mútiples itenerarios que dependerán de que tipo de sistema de construcción de modelos de regresión podemos aprender:
+El taller puede realizarse mediante mútiples itenerarios que dependerán de que tipo de sistema de construcción de modelos de regresión podemos aprender:
 
 * Itinerario 1: Ejercicio 1 => Ejercicio 2 => Ejercicio 3 => Ejercicio 4
 * Itinerario 2: Ejercicio 1 => Ejercicio 2 => Ejercicio 4
