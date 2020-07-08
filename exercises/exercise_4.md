@@ -319,9 +319,9 @@ model_folder = "models"
 try:
     os.mkdir(model_folder)
 except OSError:
-    print ("El directorio %s no hay podido ser creado" % (data_path))
+    print ("El directorio %s no hay podido ser creado" % (model_path))
 else:
-    print ("El directorio %s ha sido creado correctamente" % (data_path))
+    print ("El directorio %s ha sido creado correctamente" % (model_path))
 
 
 model_path = './models/'
