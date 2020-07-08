@@ -265,7 +265,7 @@ logdir = "./logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
 def train(net, training_iters, batch_size = 10, validation_split=0.1):
     
-    tensorboard_callback = TensorBoard(log_dir='logs/{}'.format(time()))
+    tensorboard_callback = TensorBoard(log_dir=logdir)
     
     net.fit(
         features_train, 
