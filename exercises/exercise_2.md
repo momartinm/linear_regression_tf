@@ -115,8 +115,8 @@ else:
 Una vez hayamos creado el directorio __data__ podemos proceder a descargar el archivo comprimido donde se encuentra toda la información necesaria para el desarrollo de este tutorial mediante el siguiente fragmento de código:
 
 ```
-!wget --no-check-certificate --content-disposition \
-    https://github.com/momartinm/linear_regression_tf/tree/master/data/neolen-house-price-prediction-kaggle.zip \
+!wget --no-check-certificate \
+    https://github.com/momartinm/linear_regression_tf/raw/master/data/neolen-house-price-prediction-kaggle.zip \
     -O /content/data/neolen-house-price-prediction-kaggle.zip
 ```
 
@@ -126,9 +126,10 @@ Al igual que en el paso 1 hemos utilizado un comando para la descarga de los dat
 
 Una vez que hemos descargado correctamente nuestro datos, podremos descomprimir el archivo con el objetivo de utilizar los diferentes archivos que contiene. Para ello deberemos utilizar el siguiente fragmento de código:
 
-local_zip = '/content/data/neolen-house-price-prediction-kaggle.zip'
 
 ```
+local_zip = '/content/data/neolen-house-price-prediction-kaggle.zip'
+
 try:
   zip_ref = zipfile.ZipFile(local_zip, 'r')
   zip_ref.extractall(data_path)

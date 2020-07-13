@@ -147,8 +147,8 @@ else:
 Una vez hayamos creado el directorio __data__ podemos proceder a descargar el archivo comprimido donde se encuentra toda la información necesaria para el desarrollo de este tutorial mediante el siguiente fragmento de código:
 
 ```
-!wget --no-check-certificate --content-disposition \
-    https://github.com/momartinm/linear_regression_tf/tree/master/data/neolen-house-price-prediction-kaggle.zip \
+!wget --no-check-certificate \
+    https://github.com/momartinm/linear_regression_tf/raw/master/data/neolen-house-price-prediction-kaggle.zip \
     -O /content/data/neolen-house-price-prediction-kaggle.zip
 ```
 
@@ -203,6 +203,12 @@ features_train['MoSold'] = pd.to_numeric(features_train['MoSold'], downcast='flo
 features_train['YrSold'] = pd.to_numeric(features_train['YrSold'], downcast='float')
 
 labels_train = data_train['SalePrice']
+
+features_test = data_test[['TotRmsAbvGrd', 'MoSold', 'YrSold']]
+
+features_test['TotRmsAbvGrd'] = pd.to_numeric(features_test['TotRmsAbvGrd'], downcast='float')
+features_test['MoSold'] = pd.to_numeric(features_test['MoSold'], downcast='float')
+features_test['YrSold'] = pd.to_numeric(features_test['YrSold'], downcast='float')
 ```
 
 **Paso 6. Generación de la red**
@@ -218,9 +224,9 @@ Una vez definadas la variables de entrada y salida con su formato (shape) podemo
 ```
 net = Sequential(name='Linear Regresion')
 net.add(Dense(3, input_dim=3, kernel_initializer='normal', activation='relu'))
-net.add(Dense(9, kernel_initializer='normal', activation='relu')),
-net.add(Dense(9, kernel_initializer='normal', activation='relu')),
-net.add(Dense(9, kernel_initializer='normal', activation='relu')),
+net.add(Dense(9, kernel_initializer='normal', activation='relu'))
+net.add(Dense(9, kernel_initializer='normal', activation='relu'))
+net.add(Dense(9, kernel_initializer='normal', activation='relu'))
 net.add(Dense(1, kernel_initializer='normal'))
 ```
 
@@ -259,7 +265,7 @@ logdir = "./logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
 def train(net, training_iters, batch_size = 10, validation_split=0.1):
     
-    tensorboard_callback = TensorBoard(log_dir='logs/{}'.format(time()))
+    tensorboard_callback = TensorBoard(log_dir=logdir)
     
     net.fit(
         features_train, 
@@ -313,9 +319,9 @@ model_folder = "models"
 try:
     os.mkdir(model_folder)
 except OSError:
-    print ("El directorio %s no hay podido ser creado" % (data_path))
+    print ("El directorio %s no hay podido ser creado" % (model_path))
 else:
-    print ("El directorio %s ha sido creado correctamente" % (data_path))
+    print ("El directorio %s ha sido creado correctamente" % (model_path))
 
 
 model_path = './models/'
