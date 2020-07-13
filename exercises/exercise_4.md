@@ -196,37 +196,59 @@ print(data_train.shape)
 Una vez que hemos analizado los datos que tenemos en nuestros conjuntos de entrenamiento y test podemos crear los conjuntos reales que vamos a utilizar. Como estamos trabajando con una regresión lineal simple sólo tendremos un valor en X y un valor en Y. Es decir, sólo tendremos una feature para cada una de nuestras instancias y entrenamiento y una etiqueta. Para este ejemplo vamos a utilizar más campos (número de habitaciones, el año de venta y el mes de venta) como features y el precio de venta como etiqueta (SalePrice). 
 
 ```
-features_train = data_train[['TotRmsAbvGrd', 'MoSold', 'YrSold']]
+features_train = data_train[['TotRmsAbvGrd', 'MoSold', 'YrSold', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', '1stFlrSF', '2ndFlrSF', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr']]
 
 features_train['TotRmsAbvGrd'] = pd.to_numeric(features_train['TotRmsAbvGrd'], downcast='float')
 features_train['MoSold'] = pd.to_numeric(features_train['MoSold'], downcast='float')
 features_train['YrSold'] = pd.to_numeric(features_train['YrSold'], downcast='float')
+features_train['OverallQual'] = pd.to_numeric(features_test['OverallQual'], downcast='float')
+features_train['OverallCond'] = pd.to_numeric(features_test['OverallCond'], downcast='float')
+features_train['YearBuilt'] = pd.to_numeric(features_test['YearBuilt'], downcast='float')
+features_train['YearRemodAdd'] = pd.to_numeric(features_test['YearRemodAdd'], downcast='float')
+features_train['1stFlrSF'] = pd.to_numeric(features_test['1stFlrSF'], downcast='float')
+features_train['2ndFlrSF'] = pd.to_numeric(features_test['2ndFlrSF'], downcast='float')
+features_train['FullBath'] = pd.to_numeric(features_test['FullBath'], downcast='float')
+features_train['HalfBath'] = pd.to_numeric(features_test['HalfBath'], downcast='float')
+features_train['BedroomAbvGr'] = pd.to_numeric(features_test['BedroomAbvGr'], downcast='float')
+features_train['KitchenAbvGr'] = pd.to_numeric(features_test['KitchenAbvGr'], downcast='float')
 
 labels_train = data_train['SalePrice']
 
-features_test = data_test[['TotRmsAbvGrd', 'MoSold', 'YrSold']]
+features_test = data_test[['TotRmsAbvGrd', 'MoSold', 'YrSold', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', '1stFlrSF', '2ndFlrSF', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr']]
 
 features_test['TotRmsAbvGrd'] = pd.to_numeric(features_test['TotRmsAbvGrd'], downcast='float')
 features_test['MoSold'] = pd.to_numeric(features_test['MoSold'], downcast='float')
 features_test['YrSold'] = pd.to_numeric(features_test['YrSold'], downcast='float')
+features_test['OverallQual'] = pd.to_numeric(features_test['OverallQual'], downcast='float')
+features_test['OverallCond'] = pd.to_numeric(features_test['OverallCond'], downcast='float')
+features_test['YearBuilt'] = pd.to_numeric(features_test['YearBuilt'], downcast='float')
+features_test['YearRemodAdd'] = pd.to_numeric(features_test['YearRemodAdd'], downcast='float')
+features_test['1stFlrSF'] = pd.to_numeric(features_test['1stFlrSF'], downcast='float')
+features_test['2ndFlrSF'] = pd.to_numeric(features_test['2ndFlrSF'], downcast='float')
+features_test['FullBath'] = pd.to_numeric(features_test['FullBath'], downcast='float')
+features_test['HalfBath'] = pd.to_numeric(features_test['HalfBath'], downcast='float')
+features_test['BedroomAbvGr'] = pd.to_numeric(features_test['BedroomAbvGr'], downcast='float')
+features_test['KitchenAbvGr'] = pd.to_numeric(features_test['KitchenAbvGr'], downcast='float')
+
 ```
 
 **Paso 6. Generación de la red**
 
 Una vez definadas la variables de entrada y salida con su formato (shape) podemos construir nuestra red de neuronas que estará compuesta de tres 5 capas: 
 
-- Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 3 neuronas que se corresponde con los 3 parámetros de entrada que hemos seleccionado. 
+- Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 13 neuronas que se corresponde con los 13 parámetros de entrada que hemos seleccionado. 
 - Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 9 neuronas.
 - Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 9 neuronas.
 - Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 9 neuronas.
 - Capa Fully Connected de salida (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En esta caso creamos una capa de tipo densa donde el número de neuronas de salida será 1, que se corresponderá con el valor numérico que queremos definir.
 
 ```
-net = Sequential(name='Linear Regresion')
-net.add(Dense(3, input_dim=3, kernel_initializer='normal', activation='relu'))
-net.add(Dense(9, kernel_initializer='normal', activation='relu'))
-net.add(Dense(9, kernel_initializer='normal', activation='relu'))
-net.add(Dense(9, kernel_initializer='normal', activation='relu'))
+
+net = Sequential(name='Linear Regresion multiple')
+net.add(Dense(13, input_dim=13, kernel_initializer='normal', activation='relu'))
+net.add(Dense(39, activation='relu'))
+net.add(Dense(117, activation='relu'))
+net.add(Dense(39, activation='relu'))
 net.add(Dense(1, kernel_initializer='normal'))
 ```
 
