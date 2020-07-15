@@ -407,10 +407,9 @@ def print_regression_line(model, X_print, X, Y):
   plt.scatter(X_print, Y, label="true")
   plt.scatter(X_print, model.predict(X).flatten(), label="predicted")
   plt.legend(['true', 'predicted'])
-  
   plt.show()
 
-print_regression_line(model_1, features_train_set_1, features_train_set_1, labels_train)
+print_regression_line(model_1, features_train_set_1, features_train_set_1, labels_train_norm)
 print_regression_line(model_2, features_train_set_1, features_train_set_1, labels_train_norm)
 ```
 
