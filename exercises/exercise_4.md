@@ -193,63 +193,81 @@ print(data_train.head())
 print(data_train.shape)
 ```
 
-Una vez que hemos analizado los datos que tenemos en nuestros conjuntos de entrenamiento y test podemos crear los conjuntos reales que vamos a utilizar. Como estamos trabajando con una regresión lineal simple sólo tendremos un valor en X y un valor en Y. Es decir, sólo tendremos una feature para cada una de nuestras instancias y entrenamiento y una etiqueta. Para este ejemplo vamos a utilizar más campos (número de habitaciones, el año de venta y el mes de venta) como features y el precio de venta como etiqueta (SalePrice). 
+Una vez que hemos analizado los datos que tenemos en nuestros conjuntos de entrenamiento y test podemos crear los conjuntos reales que vamos a utilizar. Como estamos trabajando con una regresión lineal simple sólo tendremos un valor en X y un valor en Y. Es decir, sólo tendremos una feature para cada una de nuestras instancias y entrenamiento y una etiqueta. Para este ejemplo vamos a crear tres conjuntos de datos de entrenamiento con diferentes features:
+
+* Conjunto 1: media del número de habitaciones por planta (TotRmsAbvGrd)
+* Conjunto 2: media del número de habitaciones por planta (TotRmsAbvGrd), Mes de venta (MoSold) y el año de venta (YrSold).
+* Conjunto 3: 13 atributos entre los que se incluyen la media del número de habitaciones por planta (TotRmsAbvGrd), Mes de venta (MoSold) y el año de venta (YrSold).
 
 ```
-features_train = data_train[['TotRmsAbvGrd', 'MoSold', 'YrSold', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', '1stFlrSF', '2ndFlrSF', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr']]
+features_train_set_1 = data_train[['TotRmsAbvGrd']]
+features_train_set_2 = data_train[['TotRmsAbvGrd', 'MoSold', 'YrSold']]
+features_train_set_3 = data_train[['TotRmsAbvGrd', 'MoSold', 'YrSold', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', '1stFlrSF', '2ndFlrSF', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr']]
+```
 
-features_train['TotRmsAbvGrd'] = pd.to_numeric(features_train['TotRmsAbvGrd'], downcast='float')
-features_train['MoSold'] = pd.to_numeric(features_train['MoSold'], downcast='float')
-features_train['YrSold'] = pd.to_numeric(features_train['YrSold'], downcast='float')
-features_train['OverallQual'] = pd.to_numeric(features_test['OverallQual'], downcast='float')
-features_train['OverallCond'] = pd.to_numeric(features_test['OverallCond'], downcast='float')
-features_train['YearBuilt'] = pd.to_numeric(features_test['YearBuilt'], downcast='float')
-features_train['YearRemodAdd'] = pd.to_numeric(features_test['YearRemodAdd'], downcast='float')
-features_train['1stFlrSF'] = pd.to_numeric(features_test['1stFlrSF'], downcast='float')
-features_train['2ndFlrSF'] = pd.to_numeric(features_test['2ndFlrSF'], downcast='float')
-features_train['FullBath'] = pd.to_numeric(features_test['FullBath'], downcast='float')
-features_train['HalfBath'] = pd.to_numeric(features_test['HalfBath'], downcast='float')
-features_train['BedroomAbvGr'] = pd.to_numeric(features_test['BedroomAbvGr'], downcast='float')
-features_train['KitchenAbvGr'] = pd.to_numeric(features_test['KitchenAbvGr'], downcast='float')
+A continuación vamos a normalizar aquellos con el objetivo que todos tengan valores en el mismo rango entre 0 y 1 para facilitar el proceso de aprendizaje para la red de neuronas. Para ellos utilizaremos la función __max__ que ofrece Pandas, que calcula el valor máximo de una columna (serie). 
 
+```
+features_train_set_1['TotRmsAbvGrd'] = pd.to_numeric(features_train_set_1['TotRmsAbvGrd'], downcast='float')
+
+features_train_set_2['TotRmsAbvGrd'] = pd.to_numeric(features_train_set_2['TotRmsAbvGrd'], downcast='float') / features_train_set_2['TotRmsAbvGrd'].max()
+features_train_set_2['MoSold'] = pd.to_numeric(features_train_set_2['MoSold'], downcast='float') / features_train_set_2['MoSold'].max()
+features_train_set_2['YrSold'] = pd.to_numeric(features_train_set_2['YrSold'], downcast='float') / features_train_set_2['YrSold'].max()
+
+features_train_set_3['TotRmsAbvGrd'] = pd.to_numeric(features_train_set_3['TotRmsAbvGrd'], downcast='float') / features_train_set_3['TotRmsAbvGrd'].max()
+features_train_set_3['MoSold'] = pd.to_numeric(features_train_set_3['MoSold'], downcast='float') / features_train_set_3['MoSold'].max()
+features_train_set_3['YrSold'] = pd.to_numeric(features_train_set_3['YrSold'], downcast='float') / features_train_set_3['YrSold'].max()
+features_train_set_3['OverallQual'] = pd.to_numeric(features_train_set_3['OverallQual'], downcast='float') / features_train_set_3['OverallQual'].max()
+features_train_set_3['OverallCond'] = pd.to_numeric(features_train_set_3['OverallCond'], downcast='float') / features_train_set_3['OverallCond'].max()
+features_train_set_3['YearBuilt'] = pd.to_numeric(features_train_set_3['YearBuilt'], downcast='float') / features_train_set_3['YearBuilt'].max()
+features_train_set_3['YearRemodAdd'] = pd.to_numeric(features_train_set_3['YearRemodAdd'], downcast='float') / features_train_set_3['YearRemodAdd'].max()
+features_train_set_3['1stFlrSF'] = pd.to_numeric(features_train_set_3['1stFlrSF'], downcast='float') / features_train_set_3['1stFlrSF'].max()
+features_train_set_3['2ndFlrSF'] = pd.to_numeric(features_train_set_3['2ndFlrSF'], downcast='float') / features_train_set_3['2ndFlrSF'].max()
+features_train_set_3['FullBath'] = pd.to_numeric(features_train_set_3['FullBath'], downcast='float') / features_train_set_3['FullBath'].max()
+features_train_set_3['HalfBath'] = pd.to_numeric(features_train_set_3['HalfBath'], downcast='float') / features_train_set_3['HalfBath'].max()
+features_train_set_3['BedroomAbvGr'] = pd.to_numeric(features_train_set_3['BedroomAbvGr'], downcast='float') / features_train_set_3['BedroomAbvGr'].max()
+features_train_set_3['KitchenAbvGr'] = pd.to_numeric(features_train_set_3['KitchenAbvGr'], downcast='float') / features_train_set_3['KitchenAbvGr'].max()
+```
+
+Además de construir diferentes conjuntos de características vamos a crear dos conjuntos de etiquetas (labels). Uno sin normalizar y otro normalizado en valores entre 0 y 10. 
+
+```
 labels_train = data_train['SalePrice']
-
-features_test = data_test[['TotRmsAbvGrd', 'MoSold', 'YrSold', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', '1stFlrSF', '2ndFlrSF', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr']]
-
-features_test['TotRmsAbvGrd'] = pd.to_numeric(features_test['TotRmsAbvGrd'], downcast='float')
-features_test['MoSold'] = pd.to_numeric(features_test['MoSold'], downcast='float')
-features_test['YrSold'] = pd.to_numeric(features_test['YrSold'], downcast='float')
-features_test['OverallQual'] = pd.to_numeric(features_test['OverallQual'], downcast='float')
-features_test['OverallCond'] = pd.to_numeric(features_test['OverallCond'], downcast='float')
-features_test['YearBuilt'] = pd.to_numeric(features_test['YearBuilt'], downcast='float')
-features_test['YearRemodAdd'] = pd.to_numeric(features_test['YearRemodAdd'], downcast='float')
-features_test['1stFlrSF'] = pd.to_numeric(features_test['1stFlrSF'], downcast='float')
-features_test['2ndFlrSF'] = pd.to_numeric(features_test['2ndFlrSF'], downcast='float')
-features_test['FullBath'] = pd.to_numeric(features_test['FullBath'], downcast='float')
-features_test['HalfBath'] = pd.to_numeric(features_test['HalfBath'], downcast='float')
-features_test['BedroomAbvGr'] = pd.to_numeric(features_test['BedroomAbvGr'], downcast='float')
-features_test['KitchenAbvGr'] = pd.to_numeric(features_test['KitchenAbvGr'], downcast='float')
-
+labels_train_norm = data_train['SalePrice'] / data_train['SalePrice'].max() * 10
 ```
 
 **Paso 6. Generación de la red**
 
-Una vez definadas la variables de entrada y salida con su formato (shape) podemos construir nuestra red de neuronas que estará compuesta de tres 5 capas: 
+Una vez definadas la variables de entrada y salida con su formato (shape) podemos construir nuestra red de neuronas que estará compuesta de capas de tipo Fully Connected (Dense). Esta es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. 
 
-- Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 13 neuronas que se corresponde con los 13 parámetros de entrada que hemos seleccionado. 
-- Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 9 neuronas.
-- Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 9 neuronas.
-- Capa Fully Connected (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En este caso creamos una capa completamente connectada con 9 neuronas.
-- Capa Fully Connected de salida (Dense): Es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. En esta caso creamos una capa de tipo densa donde el número de neuronas de salida será 1, que se corresponderá con el valor numérico que queremos definir.
+Para este ejercicio vamos a crear 3 redes de neuronas diferentes, una para cada conjunto de valores. 
+
+La primer red estará formada por una sóla capa con el fin de encontrar una relación lineal entre el número de habitaciones y el valor de la vivienda. 
 
 ```
+net_1 = Sequential(name='Linear Regresion simple')
+net_1.add(Dense(units=1, input_dim=1))
+```
 
-net = Sequential(name='Linear Regresion multiple')
-net.add(Dense(13, input_dim=13, kernel_initializer='normal', activation='relu'))
-net.add(Dense(39, activation='relu'))
-net.add(Dense(117, activation='relu'))
-net.add(Dense(39, activation='relu'))
-net.add(Dense(1, kernel_initializer='normal'))
+La segunda red estará formada por tres capas (entrada, oculta y salida), ya que entre caso nuestro conjunto de entrada está formado por tres atributos. 
+
+
+```
+net_2 = Sequential(name='Linear Regresion Multiple 3')
+net_2.add(Dense(units=3, input_dim=3))
+net_2.add(Dense(units=9, activation='relu'))
+net_2.add(Dense(units=1))
+```
+
+La tercerá red estará compuesta por 5 capas (entrada, 3x oculta y salida) con el objetivo de encontrar una mejor entre todas la variables de entrada que en este caso son 13. 
+
+```
+net_3 = Sequential(name='Linear Regresion multiple 13')
+net_3.add(Dense(units=13, input_dim=13))
+net_3.add(Dense(units=39, activation='relu'))
+net_3.add(Dense(units=117, activation='relu'))
+net_3.add(Dense(units=39, activation='relu'))
+net_3.add(Dense(units=1, kernel_initializer='normal'))
 ```
 
 **Paso 7. Definición de función de optimización**
@@ -262,11 +280,17 @@ optimizer_fn = optimizers.Adam(learning_rate=0.002, beta_1=0.9, beta_2=0.999)
 
 **Paso 8. Compilación de la red**
 
-A continuación debemos compilar nuestra red utilizando un algoritmo de optimización, una función de loss, que en este caso utilizaremos la función que calcula el error cuadrático medio y por último definimos la metrica que utilizaremos para el proceso de entrenamiento que será el __accuracy__. 
+A continuación debemos compilar nuestra redes utilizando un algoritmo de optimización, una función de loss, que en este caso utilizaremos la función que calcula el error cuadrático medio y por último definimos la metrica que utilizaremos para el proceso de entrenamiento que será el __accuracy__. 
 
 ```
-net.compile(optimizer=optimizer_fn, loss='mean_squared_error', metrics=['accuracy'])
-net.summary()
+net_1.compile(optimizer=optimizer_fn, loss='mean_squared_error')
+net_1.summary()
+
+net_2.compile(optimizer=optimizer_fn, loss='mean_squared_error')
+net_2.summary()
+
+net_3.compile(optimizer=optimizer_fn, loss='mean_squared_error')
+net_3.summary()
 ```
 
 Además una vez compilada la red, utilizaremos la función __summary__ que nos presenta un resumen de la estructura de la red que hemos creado (capas, orden de las capas, variables a entrenar, etc). 
@@ -283,22 +307,22 @@ Una vez que se han definido todas las variables y funciones necesarias para el p
 Esta función realiza una reestructuración de los datos de los conjuntos de entrenamiento y test para ajustarlos al formato y tamaño de las imágenes que hemos definido en caso de que existe alguna discrepancia y ejecuta el proceso de entrenamiento mediante la utilización del método __fit__ que ejecuta un proceso similar al que definimos en el ejercicio anterior. Además en este caso incluimos un __callback__ con el objeto de recolectar información que nos permita visualizar la evolución del proceso de entrenamiento mediante TensorBoard. 
 
 ```
-logdir = "./logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-
-def train(net, training_iters, batch_size = 10, validation_split=0.1):
-    
-    tensorboard_callback = TensorBoard(log_dir=logdir)
-    
-    net.fit(
-        features_train, 
-        labels_train,
-        batch_size=batch_size,
-        epochs=training_iters,
-        validation_split=validation_split,
-        callbacks=[tensorboard_callback]
-        )
-    
-    return net
+def train(net, X, Y, training_iters, batch_size = 10, validation_split=0.1):
+  
+  tf.compat.v1.reset_default_graph()
+   
+  logdir = "./logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S") 
+  tensorboard_callback = TensorBoard(log_dir=logdir)
+  
+  net.fit(
+    X, 
+    Y,
+    batch_size=batch_size,
+    epochs=training_iters,
+    validation_split=validation_split,
+    callbacks=[tensorboard_callback])
+  
+  return net
 ```
 
 Además tras el proceso de entrenamiento podemos calcular el resultado de nuestro modelo sobre el conjunto de test con el objetivo de conocer la capacidad real de nuestro modelo. Para ello utilizaremos la función __evaluate__ que como como parámetros obligatorios son el conjunto de características (x_test_shaped_array) y el de etiquetas (test_y). Además vamos a incluir el mismo tamaño de bacth que utilizamos en el proceso de entrenamiento. 
@@ -308,7 +332,9 @@ Además tras el proceso de entrenamiento podemos calcular el resultado de nuestr
 Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante 100 iteraciones con una tasa de aprendizaje del 0.001 y un tamaño de batch de 128 imágenes. 
 
 ```
-model = train(net, 10, 128)
+model_1 = train(net_1, features_train_set_1, labels_train, 100, 100)
+model_1_norm = train(net_1, features_train_set_1, labels_train_norm, 100, 100)
+model_2 = train(net_2, features_train_set_2, labels_train_norm, 100, 100)
 ```
 
 **Paso 11. Visualización de los resultados con TensorFlowBoard**
@@ -373,15 +399,19 @@ loaded_model = model_from_json(loaded_model_json)
 loaded_model.load_weights(model_path + model_name + '.h5')
 ```
 
-Una vez que hemos cargado el modelo podemos realizar la inferencia sobre el modelo mediante la función __predict__ que nos permite predecir el valor de salida mediante un valor de entrada. Para comprobar el funcionamiento del modelo de predicción vamos a evaluarlo mediante el siguiente código:
+Una vez que hemos cargado el modelo podemos realizar la inferencia sobre el modelo mediante la función __predict__ que nos permite predecir el valor de salida mediante un valor de entrada. Para comprobar el funcionamiento del modelo de predicción vamos a construir un función que genera una gráfica que nos muestra la regresión lineal obtenida. 
 
 ```
-predicted_labels = net.predict(features_test).flatten()
+def print_regression_line(model, X_print, X, Y):
 
-plt.scatter(features_train, labels_train, label="true")
-plt.scatter(features_train, predicted_labels, label="predicted")
-plt.legend(['true', 'predicted'])
-plt.show()
+  plt.scatter(X_print, Y, label="true")
+  plt.scatter(X_print, model.predict(X).flatten(), label="predicted")
+  plt.legend(['true', 'predicted'])
+  
+  plt.show()
+
+print_regression_line(model_1, features_train_set_1, features_train_set_1, labels_train)
+print_regression_line(model_2, features_train_set_1, features_train_set_1, labels_train_norm)
 ```
 
 **Congratulations Ninja!**
