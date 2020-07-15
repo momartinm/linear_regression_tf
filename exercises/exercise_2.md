@@ -331,23 +331,9 @@ Una vez finalizada el proceso de entrenamiento devolveremos nuestro modelo
   return model
 ```
 
-**Paso 11 - Entrenamiento de modelos**
+**Paso 11 - Visualización de la evolución del loss**
 
-Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante, por ejemplo, 100 iteraciones con una tasa de aprendizaje del 0.001. Aunque podemos jugar con dos parámetros de la función train para obtener diferentes modelos 
-
-```
-model_1 = train(features_train_1, labels_train, 100)
-model_2 = train(features_train_2, labels_train, 100)
-model_3 = train(features_train_2, labels_train, 30, 0.05)
-model_4 = train(features_train_2, labels_train, 30, 0.1)
-model_4 = train(features_train_3, labels_train, 30, 0.02)
-```
-
-En este caso yo he construido un modelo tras 100 iteraciones. 
-
-**Paso 12 - Visualización de la evolución del loss**
-
-Una vez finalizado el proceso de entrenamiento podemos visualizar la evolusión de nuestros valores de loss y validation loss sobre el conjunto de entrenamiento y validación mediante la siguiente función:
+A continuación vamos a construir una función para visualizar la evolusión de nuestros valores de loss y validation loss sobre el conjunto de entrenamiento y validación mediante la siguiente función:
 
 ```
 def print_evolution(model):
@@ -357,18 +343,9 @@ def print_evolution(model):
   plt.show()
 ```
 
-Este función generará una gráfica que mostrará la evolución de los valores de loss para el conjunto de entrenamiento y el de validación. 
+**Paso 12 - Visualización de la recta de regresión para los conjuntos de entrenamiento y test**
 
-```
-print_evolution(model_1)
-print_evolution(model_2)
-print_evolution(model_3)
-print_evolution(model_4)
-```
-
-**Paso 13 - Visualización de la recta de regresión para los conjuntos de entrenamiento y test**
-
-Para finalizar podremos comprobar el resultado de nuestra recta de regresión en dos dimensiones mediante la construcción de la siguiente función  
+Además vamos a crear una función para visualizar el resultado de nuestra recta de regresión en dos dimensiones mediante la construcción de la siguiente función  
 
 ```
 def print_regression_line(model, X, Y):
@@ -380,14 +357,40 @@ def print_regression_line(model, X, Y):
   plt.show()
 ```
 
-que nos permitirá visualizar los valores de nuestro modelo para los diferentes conjuntos de entrenamiento que hemos generado.
+**Paso 13 - Entrenamiento y visualización de los modelos**
+
+Una vez construidas todas funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante, por ejemplo, 100 iteraciones con una tasa de aprendizaje del 0.001 que el valor por defector. Ahora podemos jugar con los dos hiperparámetros (número de iteraciones, tasa de aprendizaje) de la función train para obtener diferentes modelos.  
 
 ```
+model_1 = train(features_train_1, labels_train, 100)
+print_evolution(model_1)
 print_regression_line(model_1, features_train_1, labels_train)
-print_regression_line(model_2, features_train_1, labels_train)
-print_regression_line(model_3, features_train_1, labels_train)
-print_regression_line(model_4, features_train_1, labels_train)
+
 ```
+
+**Paso 14 - Entrenar diferentes modelos**
+
+Ahora podemos construir otros modelos sólo modificando los parámetros de nuestras tres funciones. 
+
+```
+model_2 = train(features_train_2, labels_train, 100)
+print_evolution(model_2)
+print_regression_line(model_2, features_train_2, labels_train)
+
+model_3 = train(features_train_2, labels_train, 30, 0.05)
+print_evolution(model_3)
+print_regression_line(model_3, features_train_2, labels_train)
+
+model_4 = train(features_train_2, labels_train, 30, 0.1)
+print_evolution(model_4)
+print_regression_line(model_4, features_train_2, labels_train)
+
+model_5 = train(features_train_3, labels_train, 30, 0.02)
+print_evolution(model_5)
+print_regression_line(model_5, features_train_3, labels_train)
+```
+
+A continuación se presentan algunas rectas de regresión obtenidas de los procesos de entrenamiento anteriores.
 
 <img src="../img/graficas_resultados.png" alt="Rectas de regresión de algunos procesos de aprendizaje" width="800"/>
 
