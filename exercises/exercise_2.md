@@ -80,6 +80,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import datetime
 
 from os import getcwd
 from sklearn.model_selection import train_test_split
@@ -126,7 +127,6 @@ Al igual que en el paso 1 hemos utilizado un comando para la descarga de los dat
 
 Una vez que hemos descargado correctamente nuestro datos, podremos descomprimir el archivo con el objetivo de utilizar los diferentes archivos que contiene. Para ello deberemos utilizar el siguiente fragmento de código:
 
-
 ```
 local_zip = '/content/data/neolen-house-price-prediction-kaggle.zip'
 
@@ -144,7 +144,7 @@ Una vez que hemos descomprimido el archivo que descargamos previamente podremos 
 
 * data_description.txt: Fichero con información referente a cada uno atributos (features) de las instancias. 
 * train.csv (entrenamiento/validacion): Conjunto de ejemplos de información para los procesos de entrenamiento y validación.
-* test.csv (test): Conjunto de ejemplos de información para los procesos de test.
+* test.csv (test): Conjunto de ejemplos de información para los procesos de test. Para este ejercicio no vamos a utilizar este conjunto ya que no está completo. 
 
 Para poder trabajar con estos conjuntos de datos vamos a utilizar la librería Pandas que importamos previamente. Mediante esta librería podemos transformar/cargar los datos contenidos en un archivo csv a un DataFrame. Los DataFrame son conjuntos de series de datos sobre los que se pueden realizar ciertos proceso de transformación. Para poder cargar los datos deberemos utilizar el siguiente fragmento de código:
 
@@ -162,11 +162,20 @@ print(data_train.head())
 print(data_train.shape)
 ```
 
-Una vez que hemos analizado los datos que tenemos en nuestros conjuntos de entrenamiento y test podemos crear los conjuntos reales que vamos a utilizar. Como estamos trabajando con una regresión lineal simple sólo tendremos un valor en X y un valor en Y. Es decir, sólo tendremos una feature para cada una de nuestras instancias y entrenamiento y una etiqueta. Para este ejemplo vamos a utilizar el número de habitaciones (TotRmsAbvGrd) como feature y el precio de venta como etiqueta (SalePrice). 
+Una vez que hemos analizado los datos que tenemos en nuestros conjuntos de entrenamiento y test podemos crear los conjuntos reales que vamos a utilizar. Como estamos trabajando con una regresión lineal simple sólo tendremos un valor en X y un valor en Y. Es decir, sólo tendremos una feature para cada una de nuestras instancias de entrenamiento y una etiqueta. Para este ejemplo vamos a utilizar diferentes características como conjuntos de entrenamiento. 
+
+* Número medio de habitaciones por planta (TotRmsAbvGrd)
+* Número medio de habitaciones por planta (TotRmsAbvGrd) normalizado entre 0 y 1. 
+* Año de construcción (YearBuilt) normalizado entre 0 y 1. 
+* Tamaño de la primera planta (1stFlrSF) normalizado entre 0 y 1. 
+
+Y como etiqueta (label) de todas ellas utilizaremos el precio de venta de la vivienda (SalePrice). 
 
 ```
-features_train = data_train['TotRmsAbvGrd']
-features_test = data_test['TotRmsAbvGrd']
+features_train_1 = data_train['TotRmsAbvGrd']
+features_train_2 = data_train['TotRmsAbvGrd'] / data_train['TotRmsAbvGrd'].max()
+features_train_3 = data_train['YearBuilt'] / data_train['YearBuilt'].max()
+features_train_4 = data_train['1stFlrSF'] / data_train['1stFlrSF'].max()
 
 labels_train = data_train['SalePrice']
 ```
@@ -256,10 +265,13 @@ Una vez que hemos definido todas la funciones y clases necesarias para el funcio
 * Número de epocas del proceso de entrenamiento (num_epochs)
 * Tasa de aprendizaje del proceso de entrenaminto (Learning_rate)
 
-En primer lugar definiremos los elementos básicos para el proceso de entrenamiento, que se corresponden con los datos referentes al número de ejemplos, al número de características de nuestras instancias, el model que vamos a aprender y los conjuntos de entrenamiento y validación.  
+En primer lugar definiremos los elementos básicos para el proceso de entrenamiento, que se corresponden con los datos referentes al número de ejemplos y el número de características de nuestras instancias, el modelo que vamos a aprender y los conjuntos de entrenamiento y validación.  
 
 ```
-def fit( features_train, labels_train, num_epochs, learning_rate=0.001):
+def train( features_train, labels_train, num_epochs, learning_rate=0.001):
+
+  logdir = "./logs/eager/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+  writer = tf.summary.create_file_writer(logdir)
 
   num_samples = features_train.shape[0]
   num_features = 1 if len(features_train.shape) == 1 else features_train.shape[1]
@@ -273,7 +285,8 @@ def fit( features_train, labels_train, num_epochs, learning_rate=0.001):
 A continuación tenemos que definir el bucle de entrenamiento que se ejecutará durante un conjunto de iteraciones (épocas) que hemos definido como parámetro previamente en la función. 
 
 ```
-  for epoch in range( num_epochs ):
+  with writer.as_default():
+    for epoch in range( num_epochs ):
       
 ```
 
@@ -303,11 +316,13 @@ Al final de cada iteración calcularemos el valor de error (loss) sobre el conju
 
       model.add('loss', current_loss)
       model.add('loss_val', validation_loss)
-      loss = np.array( model.vars['loss'] ).mean()
       model.add('epoch', epoch +1 )
+      
+      tf.summary.scalar("loss", current_loss, step=epoch+1)
+      tf.summary.scalar("loss_val", validation_loss, step=epoch+1)
 
       print( 'Epoch ' + str(epoch+1) + '/' + str(num_epochs) )
-      print( 'loss: ' + str(loss) + ' - val_loss: ' + str(validation_loss) )
+      print( 'loss: ' + str(current_loss) + ' - val_loss: ' + str(validation_loss) )
 ```
 
 Una vez finalizada el proceso de entrenamiento devolveremos nuestro modelo 
@@ -318,37 +333,64 @@ Una vez finalizada el proceso de entrenamiento devolveremos nuestro modelo
 
 **Paso 11 - Entrenamiento de modelos**
 
-Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante 100 iteraciones con una tasa de aprendizaje del 0.001. Si queremos podemos construir diferentes modelos y ver el resultado de cada uno de ellos. 
+Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante, por ejemplo, 100 iteraciones con una tasa de aprendizaje del 0.001. Aunque podemos jugar con dos parámetros de la función train para obtener diferentes modelos 
 
 ```
-model = fit(features_train, labels_train, 100)
+model_1 = train(features_train_1, labels_train, 100)
+model_2 = train(features_train_2, labels_train, 100)
+model_3 = train(features_train_2, labels_train, 30, 0.05)
+model_4 = train(features_train_2, labels_train, 30, 0.1)
+model_4 = train(features_train_3, labels_train, 30, 0.02)
 ```
 
 En este caso yo he construido un modelo tras 100 iteraciones. 
 
 **Paso 12 - Visualización de la evolución del loss**
 
-Una vez finalizado el proceso de entrenamiento podemos visualizar la evolusión de nuestros valores de loss sobre el conjunto de entrenamiento y validación mediante el siguiente fragmento de código:
+Una vez finalizado el proceso de entrenamiento podemos visualizar la evolusión de nuestros valores de loss y validation loss sobre el conjunto de entrenamiento y validación mediante la siguiente función:
 
 ```
-plt.plot( model.vars['epoch'] , model.vars['loss'] ) 
-plt.plot( model.vars['epoch'] , model.vars['loss_val'] ) 
-plt.legend(['epoch', 'loss'])
-plt.show()
+def print_evolution(model):
+  plt.plot( model.vars['epoch'] , model.vars['loss'] ) 
+  plt.plot( model.vars['epoch'] , model.vars['loss_val'] ) 
+  plt.legend(['loss', 'loss_val'])
+  plt.show()
 ```
 
-Este fragmento de código nos mostrará la evolución de los valores de loss para el conjunto de entrenamiento y el de validación. 
+Este función generará una gráfica que mostrará la evolución de los valores de loss para el conjunto de entrenamiento y el de validación. 
+
+```
+print_evolution(model_1)
+print_evolution(model_2)
+print_evolution(model_3)
+print_evolution(model_4)
+```
 
 **Paso 13 - Visualización de la recta de regresión para los conjuntos de entrenamiento y test**
 
-Para finalizar podremos comprobar el resultado de nuestra recta de regresión en dos dimensiones mediante el siguiente fragmento de código 
+Para finalizar podremos comprobar el resultado de nuestra recta de regresión en dos dimensiones mediante la construcción de la siguiente función  
 
 ```
-plt.scatter(features_train, labels_train, label="true")
-plt.scatter(features_train, model(features_train), label="predicted")
-plt.legend(['true', 'predicted'])
-plt.show()
+def print_regression_line(model, X, Y):
+
+  plt.scatter(X, Y, label="true")
+  plt.scatter(X, model(X), label="predicted")
+  plt.legend(['true', 'predicted'])
+  
+  plt.show()
 ```
+
+que nos permitirá visualizar los valores de nuestro modelo para los diferentes conjuntos de entrenamiento que hemos generado.
+
+```
+print_regression_line(model_1, features_train_1, labels_train)
+print_regression_line(model_2, features_train_1, labels_train)
+print_regression_line(model_3, features_train_1, labels_train)
+print_regression_line(model_4, features_train_1, labels_train)
+```
+
+<img src="../img/graficas_resultado.png" alt="Rectas de regresión de algunos procesos de aprendizaje" width="800"/>
+
 
 **Congratulations Ninja!**
 
