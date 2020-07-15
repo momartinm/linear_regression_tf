@@ -389,7 +389,7 @@ print_regression_line(model_3, features_train_1, labels_train)
 print_regression_line(model_4, features_train_1, labels_train)
 ```
 
-<img src="../img/graficas_resultado.png" alt="Rectas de regresión de algunos procesos de aprendizaje" width="800"/>
+<img src="../img/graficas_resultados.png" alt="Rectas de regresión de algunos procesos de aprendizaje" width="800"/>
 
 
 **Congratulations Ninja!**
