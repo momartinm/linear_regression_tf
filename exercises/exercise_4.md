@@ -378,6 +378,10 @@ model_3 = train(net_3, features_train_set_3, labels_train_norm, 200, 750)
 print_regression_line(model_3, features_train_set_1, features_train_set_3, labels_train_norm)
 ```
 
+A continuación se presentan los modelos de regresión obtenidas de los procesos de entrenamiento anteriores
+
+<img src="../img/graficas_resultados_4.png" alt="Rectas de regresión de algunos procesos de aprendizaje" width="800"/>
+
 **Paso 14: Almacenamiento de nuestro modelo**
 
 Una vez que hemos construido nuestro modelo, podemos almacenarlo con dos objetivos: (1) utilizar para realizar inferencia sobre nuevos datos; y (2) cargarlo para seguir aprendiendo en el futuro con un nuevo conjunto de datos. Para ello es necesario almacenar la información del modelo mediante dos ficheros:
@@ -388,7 +392,6 @@ Una vez que hemos construido nuestro modelo, podemos almacenarlo con dos objetiv
 Para poder generaro estos dos ficheros debemos utilizar el siguiente fragmento de código:
 
 ```
-
 model_folder = "models"
 
 try:
