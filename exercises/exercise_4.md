@@ -378,7 +378,7 @@ model_3 = train(net_3, features_train_set_3, labels_train_norm, 200, 750)
 print_regression_line(model_3, features_train_set_1, features_train_set_3, labels_train_norm)
 ```
 
-A continuación se presentan los modelos de regresión obtenidas de los procesos de entrenamiento anteriores
+A continuación se presentan los modelos de regresión obtenidos de los procesos de entrenamiento anteriores
 
 <img src="../img/graficas_resultados_4.png" alt="Rectas de regresión de algunos procesos de aprendizaje" width="800"/>
 
