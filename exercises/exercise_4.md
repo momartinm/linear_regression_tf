@@ -1,8 +1,8 @@
 ## Taller de predicción de precios mediante modelos de regresión
 
-Machine Learning, Tensor Flow, Regresión Lineal Simple, Regresión Lineal Múltiple
+Machine Learning, TensorFlow, Regresión Lineal Simple, Regresión Lineal Múltiple, Neural Networks, Keras. 
 
-## Ejercicio 4 - Creación de un una regresión lineal múltiple mediante redes de neuronas
+## Ejercicio 4 - Creación de un una regresión lineal simple y múltiple mediante redes de neuronas
 
 El objetivo de este ejercicio es construir un modelo de regresión lineal mediante la utilización de una red de neuronas. 
 
@@ -240,34 +240,11 @@ labels_train_norm = data_train['SalePrice'] / data_train['SalePrice'].max() * 10
 
 Una vez definadas la variables de entrada y salida con su formato (shape) podemos construir nuestra red de neuronas que estará compuesta de capas de tipo Fully Connected (Dense). Esta es la capa básica de una red de neuronas convencionales donde cada neurona de la capa está conectada con todas las neuronas de la capa anterior, de este modelo de conexión proviene su nombre __fully connected__. 
 
-Para este ejercicio vamos a crear 3 redes de neuronas diferentes, una para cada conjunto de valores. 
-
-La primer red estará formada por una sóla capa con el fin de encontrar una relación lineal entre el número de habitaciones y el valor de la vivienda. 
+Para este ejercicio vamos a crear una red de neuronas para nuestro primer conjunto de valores. Esta red estará formada por una sóla capa con el fin de encontrar una relación lineal entre el número de habitaciones y el valor de la vivienda. 
 
 ```
 net_1 = Sequential(name='Linear Regresion simple')
 net_1.add(Dense(units=1, input_dim=1))
-```
-
-La segunda red estará formada por tres capas (entrada, oculta y salida), ya que entre caso nuestro conjunto de entrada está formado por tres atributos. 
-
-
-```
-net_2 = Sequential(name='Linear Regresion Multiple 3')
-net_2.add(Dense(units=3, input_dim=3))
-net_2.add(Dense(units=9, activation='relu'))
-net_2.add(Dense(units=1))
-```
-
-La tercerá red estará compuesta por 5 capas (entrada, 3x oculta y salida) con el objetivo de encontrar una mejor entre todas la variables de entrada que en este caso son 13. 
-
-```
-net_3 = Sequential(name='Linear Regresion multiple 13')
-net_3.add(Dense(units=13, input_dim=13))
-net_3.add(Dense(units=39, activation='relu'))
-net_3.add(Dense(units=117, activation='relu'))
-net_3.add(Dense(units=39, activation='relu'))
-net_3.add(Dense(units=1, kernel_initializer='normal'))
 ```
 
 **Paso 7. Definición de función de optimización**
@@ -280,17 +257,11 @@ optimizer_fn = optimizers.Adam(learning_rate=0.002, beta_1=0.9, beta_2=0.999)
 
 **Paso 8. Compilación de la red**
 
-A continuación debemos compilar nuestra redes utilizando un algoritmo de optimización, una función de loss, que en este caso utilizaremos la función que calcula el error cuadrático medio y por último definimos la metrica que utilizaremos para el proceso de entrenamiento que será el __accuracy__. 
+A continuación debemos compilar nuestra redes utilizando un algoritmo de optimización y una función de loss, que en este caso utilizaremos la función que calcula el error cuadrático medio. 
 
 ```
 net_1.compile(optimizer=optimizer_fn, loss='mean_squared_error')
 net_1.summary()
-
-net_2.compile(optimizer=optimizer_fn, loss='mean_squared_error')
-net_2.summary()
-
-net_3.compile(optimizer=optimizer_fn, loss='mean_squared_error')
-net_3.summary()
 ```
 
 Además una vez compilada la red, utilizaremos la función __summary__ que nos presenta un resumen de la estructura de la red que hemos creado (capas, orden de las capas, variables a entrenar, etc). 
@@ -299,10 +270,12 @@ Además una vez compilada la red, utilizaremos la función __summary__ que nos p
 
 Una vez que se han definido todas las variables y funciones necesarias para el proceso de aprendizaje, podemos crear la función de entrenamiento. En este caso la función es muy sencilla y formada por tres parámetros:
 
-- net: Que se corresponde con la red secuencial que hemos definido previamente.
-- training_iters: Que se corresponde con el número de iteraciones del proceso de entrenamiento.
-- batch_size: Que se corresponde con el tamaño de los conjuntos de entrenamiento que se utilizarán. 
-- validation_split: Que se corresponde con el tamaño del cojunto de validación. Es decir, el conjunto de entrada (x_shaped_array) se divirá en dos conjunto: (1) el conjunto de entrenamiento que contendrá el 90% de los ejemplos; y (2) el conjunto de validación que contendrá el 10% de los ejemplos. El primero ser utilizada para cada iteración de entrenamiento, mientras que el segundo será utilizado para validar el modelo después de cada iteración. 
+- net que se corresponde con la red secuencial que hemos definido previamente.
+- X que se corresponde con la características (features) de los ejemplos.
+- Y que se corresponde con las etiquetas (labels) de los ejemplos.
+- training_iters que se corresponde con el número de iteraciones del proceso de entrenamiento.
+- batch_size que se corresponde con el tamaño de los conjuntos de entrenamiento que se utilizarán. 
+- validation_split que se corresponde con el tamaño del cojunto de validación. Es decir, el conjunto de entrada (x_shaped_array) se divirá en dos conjunto: (1) el conjunto de entrenamiento que contendrá el 90% de los ejemplos; y (2) el conjunto de validación que contendrá el 10% de los ejemplos. El primero ser utilizada para cada iteración de entrenamiento, mientras que el segundo será utilizado para validar el modelo después de cada iteración. 
 
 Esta función realiza una reestructuración de los datos de los conjuntos de entrenamiento y test para ajustarlos al formato y tamaño de las imágenes que hemos definido en caso de que existe alguna discrepancia y ejecuta el proceso de entrenamiento mediante la utilización del método __fit__ que ejecuta un proceso similar al que definimos en el ejercicio anterior. Además en este caso incluimos un __callback__ con el objeto de recolectar información que nos permita visualizar la evolución del proceso de entrenamiento mediante TensorBoard. 
 
@@ -327,19 +300,38 @@ def train(net, X, Y, training_iters, batch_size = 10, validation_split=0.1):
 
 Además tras el proceso de entrenamiento podemos calcular el resultado de nuestro modelo sobre el conjunto de test con el objetivo de conocer la capacidad real de nuestro modelo. Para ello utilizaremos la función __evaluate__ que como como parámetros obligatorios son el conjunto de características (x_test_shaped_array) y el de etiquetas (test_y). Además vamos a incluir el mismo tamaño de bacth que utilizamos en el proceso de entrenamiento. 
 
-**Paso 10. Ejecución del proceso de entrenamiento**
+**Paso 10 - Visualización de la recta de regresión para los conjuntos de entrenamiento y test**
 
-Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante 100 iteraciones con una tasa de aprendizaje del 0.001 y un tamaño de batch de 128 imágenes. 
+Una vez que hemos cargado el modelo podemos realizar la inferencia sobre el modelo mediante la función __predict__ que nos permite predecir el valor de salida mediante un valor de entrada. Para comprobar el funcionamiento del modelo de predicción vamos a construir un función que genera una gráfica que nos muestra la regresión lineal obtenida. 
+
+```
+def print_regression_line(model, X_print, X, Y):
+
+  plt.scatter(X_print, Y, label="true")
+  plt.scatter(X_print, model.predict(X).flatten(), label="predicted")
+  plt.legend(['true', 'predicted'])
+  plt.show()
+```
+
+**Paso 11. Ejecución del proceso de entrenamiento**
+
+Una vez construidas nuestras funciones podemos ejecutar nuestro proceso de aprendizaje de la siguiente manera, ejecutando el proceso de aprendizaje durante 100 iteraciones con una tasa de aprendizaje del 0.001 y un tamaño de batch de 100 instancias. 
 
 ```
 model_1 = train(net_1, features_train_set_1, labels_train, 100, 100)
-model_1_norm = train(net_1, features_train_set_1, labels_train_norm, 100, 100)
-model_2 = train(net_2, features_train_set_2, labels_train_norm, 100, 100)
+print_regression_line(model_1, features_train_set_1, features_train_set_1, labels_train)
 ```
 
-**Paso 11. Visualización de los resultados con TensorFlowBoard**
+También podemos entrenar la red utilizando los valores de salida (labels) normalizados de la siguiente manera:
 
-Es posible visualizar la información mediante TensorFlow Board con el objetivo de poder obtener toda la información sobre el proceso de aprendizaje. Para ello es necesario incluir el siguiente comando y ejercutar el fragmento del cuarderno. TensorBoard utilizar los ficheros de logs que se han generado en el fichero que indiquemos como valor del parámetro __logdir__, que en este caso se corresponde con la carpeta logs que hemos utilizado para almacenzar los logs generados en el proceso de entrenamiento del paso 10. 
+```
+model_1_norm = train(net_1, features_train_set_1, labels_train_norm, 100, 100)
+print_regression_line(model_1_norm, features_train_set_1, features_train_set_1, labels_train_norm)
+```
+
+**Paso 12. Visualización de los resultados con TensorFlowBoard**
+
+Es posible visualizar la información mediante TensorFlow Board con el objetivo de poder obtener toda la información sobre el proceso de aprendizaje. Para ello es necesario incluir el siguiente comando y ejercutar el fragmento del cuarderno. TensorBoard utilizar los ficheros de logs que se han generado en el fichero que indiquemos como valor del parámetro __logdir__, que en este caso se corresponde con la carpeta logs que hemos utilizado para almacenzar los logs generados en el función de entrenamiento del paso 9. 
 
 ```
 %tensorboard --logdir logs
@@ -351,7 +343,42 @@ Tras la ejecución podremos ver a través del interfaz web, embevida en nuestro 
 
 Si ejecutamos este comando antes del proceso de aprendizaje podremos ver en tiempo real la evolución del proceso, ya que TensorBoard tiene un sistema de refresco de 30 segundos. 
 
-**Paso 12: Almacenamiento de nuestro modelo**
+
+**Paso 13. Entrenando otros modelos**
+
+Una vez que hemos entrenado nuestra primer red de neuronas podremos construir nuevas redes de neuronas utilizando más variables de entrada o modificando los diferentes hiperparámetros. La siguiente red estará formada por tres capas (entrada, oculta y salida), ya que entre caso nuestro conjunto de entrada está formado por tres atributos. 
+
+```
+net_2 = Sequential(name='Linear Regresion Multiple 3')
+net_2.add(Dense(units=3, input_dim=3))
+net_2.add(Dense(units=9, activation='relu'))
+net_2.add(Dense(units=1))
+
+net_2.compile(optimizer=optimizer_fn, loss='mean_squared_error')
+net_2.summary()
+
+model_2 = train(net_2, features_train_set_2, labels_train_norm, 200, 750)
+print_regression_line(model_2, features_train_set_1, features_train_set_2, labels_train_norm)
+```
+
+La tercerá red estará compuesta por 5 capas (entrada, 3x oculta y salida) con el objetivo de encontrar entre todas la variables de entrada que en este caso son 13. 
+
+```
+net_3 = Sequential(name='Linear Regresion multiple 13')
+net_3.add(Dense(units=13, input_dim=13))
+net_3.add(Dense(units=39, activation='relu'))
+net_3.add(Dense(units=117, activation='relu'))
+net_3.add(Dense(units=39, activation='relu'))
+net_3.add(Dense(units=1, kernel_initializer='normal'))
+
+net_3.compile(optimizer=optimizer_fn, loss='mean_squared_error')
+net_3.summary()
+
+model_3 = train(net_3, features_train_set_3, labels_train_norm, 200, 750)
+print_regression_line(model_3, features_train_set_1, features_train_set_3, labels_train_norm)
+```
+
+**Paso 14: Almacenamiento de nuestro modelo**
 
 Una vez que hemos construido nuestro modelo, podemos almacenarlo con dos objetivos: (1) utilizar para realizar inferencia sobre nuevos datos; y (2) cargarlo para seguir aprendiendo en el futuro con un nuevo conjunto de datos. Para ello es necesario almacenar la información del modelo mediante dos ficheros:
 
@@ -367,9 +394,9 @@ model_folder = "models"
 try:
     os.mkdir(model_folder)
 except OSError:
-    print ("El directorio %s no hay podido ser creado" % (model_path))
+    print ("El directorio %s no hay podido ser creado" % (model_folder))
 else:
-    print ("El directorio %s ha sido creado correctamente" % (model_path))
+    print ("El directorio %s ha sido creado correctamente" % (model_folder))
 
 
 model_path = './models/'
@@ -385,7 +412,7 @@ model.save_weights(model_path + model_name + ".h5")
 
 Tras la ejecución de este fragmento de código habremos generado nuestro los dos ficheros que describen la estructua de nuestra red de neuronas y los valos de los pesos de las diferentes capas. 
 
-**Paso 13 - Visualización de la recta de regresión para los conjuntos de entrenamiento y test**
+**Paso 15 - Carga del modelo previamente guardado**
 
 Una vez que hemos almacenado nuestro modelo, podemos cargarlo con el objetivo de poder ejecutar el proceso de inferencia en la aplicación en la cual queremos desplegar el modelo. Para ello tendremos que cargar el modelo que hemos almacenado previamente mediante el siguiente fragmento de código.
 
@@ -397,20 +424,6 @@ json_file.close()
 
 loaded_model = model_from_json(loaded_model_json)
 loaded_model.load_weights(model_path + model_name + '.h5')
-```
-
-Una vez que hemos cargado el modelo podemos realizar la inferencia sobre el modelo mediante la función __predict__ que nos permite predecir el valor de salida mediante un valor de entrada. Para comprobar el funcionamiento del modelo de predicción vamos a construir un función que genera una gráfica que nos muestra la regresión lineal obtenida. 
-
-```
-def print_regression_line(model, X_print, X, Y):
-
-  plt.scatter(X_print, Y, label="true")
-  plt.scatter(X_print, model.predict(X).flatten(), label="predicted")
-  plt.legend(['true', 'predicted'])
-  plt.show()
-
-print_regression_line(model_1, features_train_set_1, features_train_set_1, labels_train_norm)
-print_regression_line(model_2, features_train_set_1, features_train_set_1, labels_train_norm)
 ```
 
 **Congratulations Ninja!**
